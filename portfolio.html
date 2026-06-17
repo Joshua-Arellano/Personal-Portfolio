@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+	<title>Portfolio | Joshua Arellano</title>
+
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Portfolio of Joshua Arellano">
+	<meta name="author" content="Joshua Arellano">
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+
+	<!-- FontAwesome JS -->
+    <script defer src="assets/fontawesome/js/all.js"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="assets/plugins/tiny-slider/tiny-slider.css">
+
+	<!-- Theme CSS -->
+	<link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+</head>
+
+<body>
+
+	<header class="header text-center">
+		<div class="force-overflow">
+			<h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Joshua Arellano</a></h1>
+
+			<nav class="navbar navbar-expand-lg navbar-dark" >
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div id="navigation" class="collapse navbar-collapse flex-column" >
+					<div class="profile-section pt-3 pt-lg-0">
+
+						<div class="bio mb-3">Hey there! 👋 I'm a web developer in the making, coffee enthusiast, and problem-solver at heart.</div><!--//bio-->
+						<ul class="social-list list-inline py-2 mx-auto">
+							<li class="list-inline-item"><a href="https://bsky.app/profile/killiandw.bsky.social" target="_blank"><i class="fa-brands fa-bluesky fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://www.linkedin.com/in/joshua-arellano-5379b13b8" target="_blank"><i class="fa-brands fa-linkedin-in fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://github.com/Joshua-Arellano" target="_blank"><i class="fa-brands fa-github-alt fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="#" target="_blank"><i class="fa-brands fa-stack-overflow fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://spacehey.com/profile?id=4326124" target="_blank"><i class="fas fa-user fa-fw"></i></a></li>
+						</ul><!--//social-list-->
+						<hr>
+					</div><!--//profile-section-->
+
+					<ul class="navbar-nav flex-column text-start">
+						<li class="nav-item">
+							<a class="nav-link" href="index.html"><i class="fas fa-user fa-fw me-2"></i>About Me<span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" href="portfolio.html"><i class="fas fa-laptop-code fa-fw me-2"></i>Portfolio</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="resume.html"><i class="fas fa-file-alt fa-fw me-2"></i>Resume</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="contact.html"><i class="fas fa-envelope-open-text fa-fw me-2"></i>Contact</a>
+						</li>
+					</ul>
+
+					<div class="dark-mode-toggle text-center w-100">
+						<hr class="mb-4">
+					    <h4 class="toggle-name mb-3 "><i class="fas fa-adjust me-1"></i>Dark Mode</h4>
+
+					    <input class="toggle" id="darkmode" type="checkbox">
+					    <label class="toggle-btn mx-auto mb-0" for="darkmode"></label>
+
+					</div><!--//dark-mode-toggle-->
+				</div>
+			</nav>
+		</div><!--//force-overflow-->
+	</header>
+
+    <div class="main-wrapper">
+	    <section class="cta-section theme-bg-light py-5">
+		    <div class="container text-center single-col-max-width">
+			    <h2 class="heading">Portfolio</h2>
+			    <div class="intro">
+			    <p>Welcome to my portfolio! These are some of my favorite projects from my time at Ranken. Each one taught me something new—whether it's about databases, game emulation, or chasing API data across the internet.</p>
+			    </div>
+		    </div><!--//container-->
+	    </section>
+	    <section class="projects-list px-3 py-5 p-md-5">
+		    <div class="container">
+			    <div class="text-center">
+				    <ul id="filters" class="filters mb-5 mx-auto   ps-0">
+		                <li class="type active mb-3 mb-lg-0" data-filter="*">All</li>
+		                <li class="type  mb-3 mb-lg-0" data-filter=".webapp">Web App</li>
+		                <!-- <li class="type  mb-3 mb-lg-0" data-filter=".mobileapp">Mobile App</li> -->
+		                <li class="type  mb-3 mb-lg-0" data-filter=".application">Application</li>
+		            </ul><!--//filters-->
+			    </div>
+
+			    <div class="project-cards row isotope">
+					<div class="isotope-item col-md-6 mb-5 webapp">
+						<div class="card project-card">
+							<div class="row">
+								<div class="col-12 col-xl-5 card-img-holder">
+									<img src="assets/images/project/weatherapp.png" class="card-img" alt="image">
+								</div>
+								<div class="col-12 col-xl-7">
+									<div class="card-body">
+										<h5 class="card-title"><a href="https://joshua-arellano.github.io/weather-app/" class="theme-link">Weather App</a></h5>
+										<p class="card-text">A clean, responsive weather app built with React. Enter any city and get real-time weather data from OpenWeatherMap. Perfect for checking if it's too cold for my car audio work (spoiler: it usually isn't).</p>
+										<p class="card-text"><small class="text-muted">React.js, OpenWeatherMap API</small></p>
+									</div>
+								</div>
+							</div>
+							<div class="link-mask">
+								<a class="link-mask-link" href="https://joshua-arellano.github.io/weather-app/" target="_blank"></a>
+								<div class="link-mask-text">
+									<a class="btn btn-secondary" href="https://joshua-arellano.github.io/weather-app/" target="_blank">
+										<i class="fas fa-eye me-2"></i>View Website
+									</a>
+								</div>
+							</div><!--//link-mask-->
+						</div><!--//card-->
+					</div><!--//col-->
+					<div class="isotope-item col-md-6 mb-5 webapp">
+						<div class="card project-card">
+							<div class="row">
+								<div class="col-12 col-xl-5 card-img-holder">
+									<img src="assets/images/project/vidyastorage.png" class="card-img" alt="image">
+								</div>
+								<div class="col-12 col-xl-7">
+									<div class="card-body">
+										<h5 class="card-title"><a href="https://joshua-arellano.github.io/Vidya-Finale/" class="theme-link">Video Game Storage</a></h5>
+										<p class="card-text">My final project for AWD1000—a fully functional web app to catalog and manage your video game collection. Built with vanilla HTML, CSS, and JavaScript, this project proved I could build something people actually want to use.</p>
+										<p class="card-text"><small class="text-muted">HTML5, CSS3, Vanilla JavaScript</small></p>
+									</div>
+								</div>
+							</div>
+							<div class="link-mask">
+								<a class="link-mask-link" href="https://joshua-arellano.github.io/Vidya-Finale/" target="_blank"></a>
+								<div class="link-mask-text">
+									<a class="btn btn-secondary" href="https://joshua-arellano.github.io/Vidya-Finale/" target="_blank">
+										<i class="fas fa-eye me-2"></i>View Website
+									</a>
+								</div>
+							</div><!--//link-mask-->
+						</div><!--//card-->
+						</div><!--//col-->
+					<div class="isotope-item col-md-6 mb-5 application">
+						<div class="card project-card">
+							<div class="row">
+								<div class="col-12 col-xl-5 card-img-holder">
+									<img src="assets/images/project/emuapp.png" class="card-img" alt="image">
+								</div>
+								<div class="col-12 col-xl-7">
+									<div class="card-body">
+										<h5 class="card-title"><a href="https://www.youtube.com/watch?v=xxcRvYgpA0Q" class="theme-link">Emulator Frontend</a></h5>
+										<p class="card-text">A C# desktop application that brings my love of retro gaming full circle. This CRUD app lets you manage a NES game collection with a MySQL database backend—search games, view manuals, and hit play. Pure nostalgia meets modern code.</p>
+										<p class="card-text"><small class="text-muted">C#, MySQL, Visual Studio</small></p>
+									</div>
+								</div>
+							</div>
+							<div class="link-mask">
+								<a class="link-mask-link" href="https://www.youtube.com/watch?v=xxcRvYgpA0Q" target="_blank"></a>
+								<div class="link-mask-text">
+									<a class="btn btn-secondary" href="https://www.youtube.com/watch?v=xxcRvYgpA0Q" target="_blank">
+										<i class="fas fa-eye me-2"></i>View Demo
+									</a>
+								</div>
+							</div><!--//link-mask-->
+						</div><!--//card-->
+						</div><!--//col-->
+					</div>
+					<div class="isotope-item col-md-12 mb-5 webapp mobileapp frontend backend">
+							<div class="row text-center">
+									<h5 class="card-title">🚀 More projects coming soon! Stay tuned...</h5>
+							</div>
+					</div>
+		    </div>
+	    </section>
+
+	    <footer class="footer text-center py-4">
+			<small class="copyright">Joshua Arellano &copy; 2026</small>
+		</footer>
+
+    </div><!--//main-wrapper-->
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!--Page Specific JS -->
+    <script type="text/javascript" src="assets/plugins/imagesloaded.pkgd.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/isotope.pkgd.min.js"></script>
+
+    <script type="text/javascript" src="assets/js/isotope-custom.js"></script>
+
+    <!-- Dark Mode -->
+	<script src="assets/plugins/js-cookie.min.js"></script>
+	<script src="assets/js/dark-mode.js"></script>
+
+</body>
+</html>

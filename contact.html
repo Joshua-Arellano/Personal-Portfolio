@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+	<title>Contact | Joshua Arellano</title>
+
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Portfolio of Joshua Arellano">
+	<meta name="author" content="Joshua Arellano">
+	<link rel="shortcut icon" href="favicon.ico">
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+
+	<!-- FontAwesome JS -->
+    <script defer src="assets/fontawesome/js/all.js"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="assets/plugins/tiny-slider/tiny-slider.css">
+
+	<!-- Theme CSS -->
+	<link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+	
+	<!-- Include Forminit SDK -->
+	<script src="https://forminit.com/sdk/v1/forminit.js"></script>
+
+</head>
+
+<body>
+
+	<header class="header text-center">
+		<div class="force-overflow">
+			<h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" href="index.html">Joshua Arellano</a></h1>
+
+			<nav class="navbar navbar-expand-lg navbar-dark" >
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div id="navigation" class="collapse navbar-collapse flex-column" >
+					<div class="profile-section pt-3 pt-lg-0">
+
+						<div class="bio mb-3">Hey there! 👋 I'm a web developer in the making, coffee enthusiast, and problem-solver at heart.</div><!--//bio-->
+						<ul class="social-list list-inline py-2 mx-auto">
+							<li class="list-inline-item"><a href="https://bsky.app/profile/killiandw.bsky.social" target="_blank"><i class="fa-brands fa-bluesky fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://www.linkedin.com/in/joshua-arellano-5379b13b8" target="_blank"><i class="fa-brands fa-linkedin-in fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://github.com/Joshua-Arellano" target="_blank"><i class="fa-brands fa-github-alt fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="#" target="_blank"><i class="fa-brands fa-stack-overflow fa-fw"></i></a></li>
+							<li class="list-inline-item"><a href="https://spacehey.com/profile?id=4326124" target="_blank"><i class="fas fa-user fa-fw"></i></a></li>
+						</ul><!--//social-list-->
+						<hr> 
+					</div><!--//profile-section-->
+
+					<ul class="navbar-nav flex-column text-start">
+						<li class="nav-item">
+							<a class="nav-link" href="index.html"><i class="fas fa-user fa-fw me-2"></i>About Me<span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="portfolio.html"><i class="fas fa-laptop-code fa-fw me-2"></i>Portfolio</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="resume.html"><i class="fas fa-file-alt fa-fw me-2"></i>Resume</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" href="contact.html"><i class="fas fa-envelope-open-text fa-fw me-2"></i>Contact</a>
+						</li>
+					</ul>
+
+					<div class="dark-mode-toggle text-center w-100">
+						<hr class="mb-4">
+					    <h4 class="toggle-name mb-3 "><i class="fas fa-adjust me-1"></i>Dark Mode</h4>
+
+					    <input class="toggle" id="darkmode" type="checkbox">
+					    <label class="toggle-btn mx-auto mb-0" for="darkmode"></label>
+
+					</div><!--//dark-mode-toggle-->
+
+				</div>
+			</nav>
+		</div><!--//force-overflow-->
+	</header>
+
+    <div class="main-wrapper">
+	    <section class="cta-section theme-bg-light py-5">
+		    <div class="container text-center single-col-max-width">
+			    <h2 class="heading">Contact</h2>
+			    <div class="intro">
+			    <p>Got a question? Reach out! I'm always happy to connect.</p>
+	            </div>
+			</div><!--//container-->
+	    </section>
+	    <section class="contact-section px-3 py-5 p-md-5">
+		    <div class="container">
+
+				<!-- Your Form -->
+				<form id="contact-form" class="contact-form col-lg-8 mx-lg-auto" enctype="multipart/form-data">
+					<h3 class="text-center mb-3">Get In Touch</h3>
+					<div class="row g-3">
+						<div class="col-12 col-md-6">
+							<label class="sr-only" for="cname">Name</label>
+							<input type="text" class="form-control" id="cname" name="fi-sender-fullName" placeholder="Name" minlength="2" required="" aria-required="true">
+						</div>
+						<div class="col-12 col-md-6">
+							<label class="sr-only" for="cemail">Email</label>
+							<input type="email" class="form-control" id="cemail" name="fi-sender-email" placeholder="Email" required="" aria-required="true">
+						</div>
+						<div class="col-12">
+							<label class="sr-only" for="cmessage">Your message</label>
+							<textarea class="form-control" id="cmessage" name="fi-text-message" placeholder="Enter your message" rows="10" required="" aria-required="true"></textarea>
+						</div>
+						 <div class="form-group col-12">
+							<button type="submit" class="btn btn-block btn-primary py-2">Send Now</button>
+						</div>
+					</div><!--//form-row-->
+				<!-- tracking: auto-captured by the SDK from URL params and referrer -->
+				<p id="form-status"></p>
+				</form>
+
+				<script>
+				const forminit = new Forminit();
+				const FORM_ID = "d775qpt1lwb";
+
+				document.getElementById("contact-form").addEventListener("submit", async (e) => {
+					e.preventDefault();
+
+					const formData = new FormData(e.target);
+					const { data, error } = await forminit.submit(FORM_ID, formData);
+
+					const status = document.getElementById("form-status");
+
+					if (error) {
+					status.textContent = error.message;
+					return;
+					}
+
+					status.textContent = "Message sent successfully!";
+					e.target.reset();
+				});
+				</script>
+		    </div><!--//container-->
+	    </section>
+
+	    <footer class="footer text-center py-4">
+			<small class="copyright">Joshua Arellano &copy; 2026</small>
+		</footer>
+
+    </div><!--//main-wrapper-->
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js"></script> 
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Dark Mode -->
+	<script src="assets/plugins/js-cookie.min.js"></script>
+	<script src="assets/js/dark-mode.js"></script>
+
+</body>
+</html>
+
