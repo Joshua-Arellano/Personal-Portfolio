@@ -1,0 +1,2348 @@
+/* ===========================================================================
+   josh-a.dev — styles.css
+   ---------------------------------------------------------------------------
+   Loaded by index.html with <link rel="stylesheet" href="styles.css">.
+   Plain CSS, no preprocessor and no build step: edit and reload.
+
+   Contents
+     1  design tokens         6  projects          11 overlays (term + keys)
+     2  reset                 7  résumé            12 entrance animation
+     3  utilities             8  blog              13 responsive
+     4  header / nav          9  contact           14 print
+     5  layout + hero        10  footer / rails
+   =========================================================================== */
+
+/* ===========================================================================
+   1 · DESIGN TOKENS
+   ---------------------------------------------------------------------------
+   Colour tokens mirror the ones omarchy.us exposes. `:root` holds the
+   tokyo-night defaults so an unknown `data-theme` still renders legibly; every
+   theme block below overrides the same set. `--code-bg` surfaces the terminal
+   and heatmap; `::selection` uses the brand colour.
+   =========================================================================== */
+:root {
+  --bg-deep: #13141c;
+  --bg: #1a1b26;
+  --surface: #1f2230;
+  --surface-2: #24283b;
+  --border: #24283b;
+  --border-strong: #414868;
+  --text: #c0caf5;
+  --text-2: #a9b1d6;
+  --muted: #8b93b8;
+  --brand: #9ece6a;
+  --brand-ink: #0c0e10;
+  --code-bg: #0e0e14;
+  color-scheme: dark;
+  --font-body:
+    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  --gut: clamp(8px, 1.1vw, 18px); /* page gutter — the compact knob */
+  --page-pad: var(--gut); /* outer padding — widened on desktop */
+  --pad: clamp(0.9rem, 1.7vw, 1.4rem); /* panel body padding */
+  --nav-h: 52px;
+  --maxw: 1680px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* --- palette (each is a full replacement for the set above) --------------- */
+[data-theme="tokyo-night"] {
+  --bg-deep: #13141c;
+  --bg: #1a1b26;
+  --surface: #1f2230;
+  --surface-2: #24283b;
+  --border: #24283b;
+  --border-strong: #414868;
+  --text: #c0caf5;
+  --text-2: #a9b1d6;
+  --muted: #8b93b8;
+  --brand: #9ece6a;
+  --brand-ink: #0c0e10;
+  --code-bg: #0e0e14;
+  color-scheme: dark;
+}
+[data-theme="catppuccin"] {
+  --bg-deep: #161622;
+  --bg: #1e1e2e;
+  --surface: #282839;
+  --surface-2: #313244;
+  --border: #313244;
+  --border-strong: #585b70;
+  --text: #cdd6f4;
+  --text-2: #cdd6f4;
+  --muted: #9399b2;
+  --brand: #89b4fa;
+  --brand-ink: #0c0e10;
+  --code-bg: #101019;
+  color-scheme: dark;
+}
+[data-theme="catppuccin-latte"] {
+  --bg-deep: #e3e4e8;
+  --bg: #eff1f5;
+  --surface: #f8f9fb;
+  --surface-2: #e3e4e8;
+  --border: #d7d8dc;
+  --border-strong: #acb0be;
+  --text: #4c4f69;
+  --text-2: #53556f;
+  --muted: #5c5f77;
+  --brand: #1e66f5;
+  --brand-ink: #ffffff;
+  --code-bg: #d7d8dc;
+  color-scheme: light;
+}
+[data-theme="ethereal"] {
+  --bg-deep: #040816;
+  --bg: #060b1e;
+  --surface: #0c122c;
+  --surface-2: #131a3a;
+  --border: #131a3a;
+  --border-strong: #6d7db6;
+  --text: #ffcead;
+  --text-2: #ffcead;
+  --muted: #b6a6b2;
+  --brand: #7d82d9;
+  --brand-ink: #0c0e10;
+  --code-bg: #030610;
+  color-scheme: dark;
+}
+[data-theme="everforest"] {
+  --bg-deep: #21272c;
+  --bg: #2d353b;
+  --surface: #303a40;
+  --surface-2: #343f44;
+  --border: #343f44;
+  --border-strong: #475258;
+  --text: #d3c6aa;
+  --text-2: #d3c6aa;
+  --muted: #918f84;
+  --brand: #7fbbb3;
+  --brand-ink: #0c0e10;
+  --code-bg: #181d20;
+  color-scheme: dark;
+}
+[data-theme="flexoki-light"] {
+  --bg-deep: #f2efe4;
+  --bg: #fffcf0;
+  --surface: #f9f6ea;
+  --surface-2: #f2efe4;
+  --border: #e5e2d8;
+  --border-strong: #b7b5ac;
+  --text: #100f0f;
+  --text-2: #454340;
+  --muted: #555450;
+  --brand: #205ea6;
+  --brand-ink: #ffffff;
+  --code-bg: #e5e2d8;
+  color-scheme: light;
+}
+[data-theme="gruvbox"] {
+  --bg-deep: #1e1e1e;
+  --bg: #282828;
+  --surface: #32302f;
+  --surface-2: #3c3836;
+  --border: #3c3836;
+  --border-strong: #665c54;
+  --text: #d4be98;
+  --text-2: #d4be98;
+  --muted: #a89984;
+  --brand: #7daea3;
+  --brand-ink: #0c0e10;
+  --code-bg: #161616;
+  color-scheme: dark;
+}
+[data-theme="hackerman"] {
+  --bg-deep: #080910;
+  --bg: #0b0c16;
+  --surface: #10121f;
+  --surface-2: #151828;
+  --border: #151828;
+  --border-strong: #2d3450;
+  --text: #ddf7ff;
+  --text-2: #ddf7ff;
+  --muted: #a4b2ca;
+  --brand: #82fb9c;
+  --brand-ink: #0c0e10;
+  --code-bg: #06060c;
+  color-scheme: dark;
+}
+[data-theme="kanagawa"] {
+  --bg-deep: #17171e;
+  --bg: #1f1f28;
+  --surface: #202838;
+  --surface-2: #223249;
+  --border: #223249;
+  --border-strong: #54546d;
+  --text: #dcd7ba;
+  --text-2: #dcd7ba;
+  --muted: #a7a492;
+  --brand: #dcd7ba;
+  --brand-ink: #0c0e10;
+  --code-bg: #111116;
+  color-scheme: dark;
+}
+[data-theme="last-horizon"] {
+  --bg-deep: #090809;
+  --bg: #0c0b0c;
+  --surface: #141213;
+  --surface-2: #1a1718;
+  --border: #241f21;
+  --border-strong: #584e51;
+  --text: #fafcfb;
+  --text-2: #e2dddc;
+  --muted: #a9a5a6;
+  --brand: #b59790;
+  --brand-ink: #0c0e10;
+  --code-bg: #060606;
+  color-scheme: dark;
+}
+[data-theme="lumon"] {
+  --bg-deep: #101b21;
+  --bg: #16242d;
+  --surface: #182836;
+  --surface-2: #1b2d40;
+  --border: #1b2d40;
+  --border-strong: #304860;
+  --text: #f2fcff;
+  --text-2: #d6e2ee;
+  --muted: #a0c1d8;
+  --brand: #8bc9eb;
+  --brand-ink: #0c0e10;
+  --code-bg: #0b1216;
+  color-scheme: dark;
+}
+[data-theme="lupine"] {
+  --bg-deep: #ececec;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-2: #ececec;
+  --border: #dedede;
+  --border-strong: #9e9e9e;
+  --text: #000000;
+  --text-2: #212121;
+  --muted: #484848;
+  --brand: #3264eb;
+  --brand-ink: #ffffff;
+  --code-bg: #dedede;
+  color-scheme: light;
+}
+[data-theme="matte-black"] {
+  --bg-deep: #0d0d0d;
+  --bg: #121212;
+  --surface: #181818;
+  --surface-2: #1e1e1e;
+  --border: #1e1e1e;
+  --border-strong: #333333;
+  --text: #eaeaea;
+  --text-2: #bebebe;
+  --muted: #8a8a8a;
+  --brand: #e68e0d;
+  --brand-ink: #0c0e10;
+  --code-bg: #090909;
+  color-scheme: dark;
+}
+[data-theme="miasma"] {
+  --bg-deep: #191919;
+  --bg: #222222;
+  --surface: #272727;
+  --surface-2: #2c2c2c;
+  --border: #2c2c2c;
+  --border-strong: #666666;
+  --text: #c2c2b0;
+  --text-2: #c2c2b0;
+  --muted: #8c8c82;
+  --brand: #78824b;
+  --brand-ink: #0c0e10;
+  --code-bg: #121212;
+  color-scheme: dark;
+}
+[data-theme="nord"] {
+  --bg-deep: #222730;
+  --bg: #2e3440;
+  --surface: #343b49;
+  --surface-2: #3b4252;
+  --border: #3b4252;
+  --border-strong: #4c566a;
+  --text: #d8dee9;
+  --text-2: #d8dee9;
+  --muted: #9fa7b4;
+  --brand: #81a1c1;
+  --brand-ink: #0c0e10;
+  --code-bg: #191c23;
+  color-scheme: dark;
+}
+[data-theme="osaka-jade"] {
+  --bg-deep: #0c1512;
+  --bg: #111c18;
+  --surface: #1a2a22;
+  --surface-2: #23372b;
+  --border: #23372b;
+  --border-strong: #53685b;
+  --text: #f7e8b2;
+  --text-2: #c1c497;
+  --muted: #969978;
+  --brand: #509475;
+  --brand-ink: #0c0e10;
+  --code-bg: #090f0d;
+  color-scheme: dark;
+}
+[data-theme="retro-82"] {
+  --bg-deep: #031222;
+  --bg: #05182e;
+  --surface: #081e37;
+  --surface-2: #0a2540;
+  --border: #0a2540;
+  --border-strong: #2a6b78;
+  --text: #f6dcac;
+  --text-2: #f6dcac;
+  --muted: #9ab69b;
+  --brand: #faa968;
+  --brand-ink: #0c0e10;
+  --code-bg: #020c17;
+  color-scheme: dark;
+}
+[data-theme="ristretto"] {
+  --bg-deep: #211b1b;
+  --bg: #2c2525;
+  --surface: #342a28;
+  --surface-2: #3d2f2a;
+  --border: #3d2f2a;
+  --border-strong: #72696a;
+  --text: #e6d9db;
+  --text-2: #e6d9db;
+  --muted: #aca1a2;
+  --brand: #f38d70;
+  --brand-ink: #0c0e10;
+  --code-bg: #181414;
+  color-scheme: dark;
+}
+[data-theme="rose-pine"] {
+  --bg-deep: #ede7e1;
+  --bg: #faf4ed;
+  --surface: #fffaf3;
+  --surface-2: #ede7e1;
+  --border: #e1dbd5;
+  --border-strong: #cecacd;
+  --text: #575279;
+  --text-2: #5e587d;
+  --muted: #676284;
+  --brand: #56949f;
+  --brand-ink: #ffffff;
+  --code-bg: #e1dbd5;
+  color-scheme: light;
+}
+[data-theme="solitude"] {
+  --bg-deep: #0c0e10;
+  --bg: #101315;
+  --surface: #161a1d;
+  --surface-2: #1b2023;
+  --border: #232a2e;
+  --border-strong: #4b4e55;
+  --text: #cacccc;
+  --text-2: #a5aeb4;
+  --muted: #8a8d90;
+  --brand: #798186;
+  --brand-ink: #0c0e10;
+  --code-bg: #080a0b;
+  color-scheme: dark;
+}
+[data-theme="vantablack"] {
+  --bg-deep: #090909;
+  --bg: #000000;
+  --surface: #0d0d0d;
+  --surface-2: #1a1a1a;
+  --border: #1a1a1a;
+  --border-strong: #7a7a7a;
+  --text: #ffffff;
+  --text-2: #ffffff;
+  --muted: #a8a8a8;
+  --brand: #8d8d8d;
+  --brand-ink: #0c0e10;
+  --code-bg: #070707;
+  color-scheme: dark;
+}
+[data-theme="white"] {
+  --bg-deep: #f5f5f5;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f5f5f5;
+  --border: #e8e8e8;
+  --border-strong: #c9c9c9;
+  --text: #000000;
+  --text-2: #383838;
+  --muted: #4a4a4a;
+  --brand: #6e6e6e;
+  --brand-ink: #ffffff;
+  --code-bg: #f0f0f0;
+  color-scheme: light;
+}
+
+/* ===========================================================================
+   2 · RESET
+   =========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 12px);
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: clamp(14px, 0.55vw + 12.5px, 16px);
+  line-height: 1.55;
+  letter-spacing: 0.004em;
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+p {
+  margin: 0;
+}
+::selection {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* Faint etched grid + brand wash behind everything — pure decoration. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.35;
+  mask-image: radial-gradient(circle at 50% 0%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 0%,
+    #000 0%,
+    transparent 78%
+  );
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 80% at 50% -10%,
+    color-mix(in srgb, var(--brand) 8%, transparent),
+    transparent 60%
+  );
+}
+
+/* ===========================================================================
+   3 · UTILITIES
+   =========================================================================== */
+.mono {
+  font-family: var(--font-mono);
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+.accent {
+  color: var(--brand);
+}
+.sr {
+  position: absolute;
+  left: -9999px;
+}
+
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  padding: 0 0.35rem;
+  border: 1px solid var(--border-strong);
+  color: var(--text-2);
+  background: var(--surface-2);
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.28em 0.55em;
+  border: 1px solid var(--border-strong);
+  color: var(--text-2);
+  background: var(--surface);
+}
+.tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--brand);
+  flex: none;
+}
+.tag.is-brand {
+  border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+  color: var(--brand);
+}
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  transition:
+    border-color 0.18s var(--ease),
+    color 0.18s var(--ease),
+    transform 0.18s var(--ease);
+  white-space: nowrap;
+}
+.btn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  transform: translateY(-1px);
+}
+.btn.primary {
+  background: var(--brand);
+  color: var(--brand-ink);
+  border-color: var(--brand);
+  font-weight: 500;
+}
+.btn.primary:hover {
+  color: var(--brand-ink);
+  filter: brightness(1.08);
+}
+.btn.sm {
+  padding: 0.4rem 0.65rem;
+  font-size: 0.72rem;
+}
+
+/* Panel = the window-like container every section lives in. */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.panel-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem var(--pad);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.panel-hd .t {
+  color: var(--text-2);
+}
+/* Small mono caption in a panel header — every mono child except the overlay
+   close button, which keeps the header's own size. */
+.panel-hd .mono:not(button) {
+  font-size: 0.66rem;
+}
+.panel-hd .dot {
+  display: flex;
+  gap: 0.35rem;
+}
+.panel-hd .dot i {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--border-strong);
+  display: block;
+}
+.panel-hd .dot i:first-child {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.panel-bd {
+  padding: var(--pad);
+}
+.panel-bd.flush {
+  padding: 0;
+}
+.panel-bd.tight {
+  padding-top: 0.4rem;
+}
+
+/* Progressive-enhancement gates.
+   `html.no-js` is set in the markup and removed by the first script, so it
+   only survives when JavaScript is genuinely unavailable — that is when the
+   JS-only chrome (and the now-inert switch) should disappear. `data-js="off"`
+   is the live toggle the user controls with the J key. */
+.no-js .js-only {
+  display: none !important;
+}
+.no-js .switch {
+  display: none !important;
+}
+[data-js="off"] .js-only {
+  display: none !important;
+}
+
+/* ===========================================================================
+   4 · HEADER / NAV
+   =========================================================================== */
+.skip {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  z-index: 100;
+  background: var(--brand);
+  color: var(--brand-ink);
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.skip:focus {
+  left: 8px;
+  top: 8px;
+}
+
+header.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner {
+  height: var(--nav-h);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.4vw, 1.4rem);
+  padding-inline: var(--page-pad);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: none;
+}
+.brand .mark {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--brand);
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 14%, transparent);
+}
+.brand b {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+.brand b span {
+  color: var(--muted);
+}
+
+nav.mainnav {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+nav.mainnav::-webkit-scrollbar {
+  display: none;
+}
+nav.mainnav a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-2);
+  padding: 0.42rem 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+nav.mainnav a .num {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+nav.mainnav a:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+/* Active state is deliberately loud and hover-proof: clicking a link leaves the
+   cursor on it, so :hover must not be able to mask the highlight. */
+nav.mainnav a[aria-current="true"],
+nav.mainnav a[aria-current="true"]:hover {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+}
+.tools select {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-2);
+  cursor: pointer;
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong);
+  padding: 0.42rem 1.6rem 0.42rem 0.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 12px) 55%,
+    calc(100% - 7px) 55%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+.tools select:hover {
+  border-color: var(--brand);
+}
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  padding: 0.35rem 0.5rem;
+}
+.switch .track {
+  width: 30px;
+  height: 14px;
+  border: 1px solid var(--border-strong);
+  position: relative;
+  flex: none;
+  background: var(--bg-deep);
+}
+.switch .knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 10px;
+  height: 10px;
+  background: var(--muted);
+  transition:
+    transform 0.18s var(--ease),
+    background 0.18s var(--ease);
+}
+.switch[aria-checked="true"] .knob {
+  transform: translateX(15px);
+  background: var(--brand);
+}
+.switch[aria-checked="true"] {
+  color: var(--text);
+}
+.iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-2);
+  transition:
+    border-color 0.18s var(--ease),
+    color 0.18s var(--ease);
+}
+.iconbtn:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.iconbtn svg {
+  width: 1rem;
+  height: 1rem;
+}
+.clock {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* ===========================================================================
+   5 · LAYOUT SHELL + HERO
+   =========================================================================== */
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gut);
+  padding-block: var(--gut);
+  padding-inline: var(--page-pad);
+}
+
+/* Hero ------------------------------------------------------------------- */
+/* Tall enough to own the first screen, but it never forces dead space. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+  min-height: min(660px, calc(100dvh - var(--nav-h) - 3 * var(--gut)));
+}
+.hero-copy {
+  padding: clamp(1.1rem, 3vw, 2.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.8rem, 1.8vw, 1.4rem);
+  justify-content: center;
+}
+.prompt {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.prompt b {
+  color: var(--brand);
+  font-weight: 500;
+}
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--brand);
+  vertical-align: -0.12em;
+  margin-left: 0.3em;
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.hero h1 {
+  font-size: clamp(2.4rem, 8vw, 5.6rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--brand);
+}
+.hero .role {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.3vw, 0.98rem);
+  color: var(--text-2);
+  max-width: 54ch;
+  line-height: 1.6;
+}
+.hero .role .dim {
+  color: var(--muted);
+}
+.statusrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.hero-side {
+  border-top: 1px solid var(--border);
+  background: var(--bg-deep);
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+}
+.headshot {
+  margin: 0; /* <figure> brings its own margins; the panel supplies the spacing */
+  border: 1px solid var(--border-strong);
+  position: relative;
+  background: var(--surface-2);
+  aspect-ratio: 4/5;
+  overflow: hidden;
+}
+.headshot img {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The frame is 4:5, matching the photo, so normally nothing is cropped.
+     `object-position` only matters if that ever drifts (a short viewport, or a
+     differently-shaped replacement photo): any crop takes torso, never the top
+     of the head. */
+  object-position: 50% 0%;
+  filter: grayscale(0.15) contrast(1.02);
+}
+.headshot-fallback {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.2rem;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+.headshot-fallback b {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  color: var(--brand);
+  font-weight: 500;
+}
+.headshot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--brand) 22%, transparent);
+  background: repeating-linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--bg) 45%, transparent) 0 1px,
+    transparent 1px 4px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+.spec {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.3rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+.spec dt {
+  color: var(--muted);
+}
+.spec dd {
+  margin: 0;
+  color: var(--text-2);
+}
+.vtext {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.42em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* About ------------------------------------------------------------------ */
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+}
+.bio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  font-size: 1rem;
+  color: var(--text-2);
+  max-width: 74ch;
+}
+.bio strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.about-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* Skills ----------------------------------------------------------------- */
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.skill-group {
+  background: var(--surface);
+  padding: clamp(0.75rem, 1.5vw, 1rem);
+}
+.skill-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ===========================================================================
+   6 · PROJECTS (filter · cards · case study · github block)
+   =========================================================================== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.fbtn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 0.36rem 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  transition:
+    color 0.16s var(--ease),
+    border-color 0.16s var(--ease),
+    background 0.16s var(--ease);
+}
+.fbtn:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.fbtn[aria-pressed="true"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 500;
+}
+.fcount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.pgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.pcard {
+  background: var(--surface);
+  padding: clamp(0.9rem, 1.7vw, 1.3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  position: relative;
+  transition: background 0.18s var(--ease);
+}
+.pcard:hover {
+  background: var(--surface-2);
+}
+/* Filters hide grid children with the `hidden` attribute; the id selector
+   beats the `display` set by .pcard/.case so both card kinds disappear. */
+#pgrid > [hidden] {
+  display: none;
+}
+.pcard .ph {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.pcard .ph .repo {
+  color: var(--brand);
+}
+.pcard h3 {
+  font-size: 1rem;
+}
+.pcard p {
+  color: var(--text-2);
+  font-size: 0.88rem;
+}
+.pcard .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.pcard .foot {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.pcard .foot a {
+  color: var(--brand);
+}
+.pcard .foot a:hover {
+  text-decoration: underline;
+}
+
+/* featured case study spans the whole grid */
+.case {
+  grid-column: 1 / -1;
+  background: var(--surface);
+  padding: clamp(0.9rem, 1.8vw, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.case-head h3 {
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+}
+.case-head p {
+  color: var(--text-2);
+  max-width: 62ch;
+  margin-top: 0.45rem;
+  font-size: 0.92rem;
+}
+.case-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.case-card {
+  background: var(--bg);
+  padding: clamp(0.8rem, 1.6vw, 1.15rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.case-card .n {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.case-card h4 {
+  font-size: 0.95rem;
+}
+.case-card p {
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+
+/* github contribution block */
+/* The github block sits below the project grid. */
+.panel-bd > .tracker {
+  margin-top: 1rem;
+}
+.tracker {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+}
+.tracker .panel-hd {
+  background: var(--surface);
+}
+.gh-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: var(--pad);
+  padding-bottom: 0.7rem;
+}
+.gh-stats {
+  display: flex;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+}
+.gh-stats b {
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  display: block;
+  line-height: 1.2;
+}
+.gh-stats span {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.gh-scroll {
+  overflow-x: auto;
+  padding: 0 var(--pad) 0.5rem;
+}
+.gh-months {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  column-gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+  min-width: 26rem;
+  white-space: nowrap;
+}
+.gh-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 1fr);
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 3px;
+  min-width: 26rem;
+}
+.gh-grid .cell {
+  aspect-ratio: 1;
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  outline: 1px solid transparent;
+}
+.cell[data-lvl="1"] {
+  background: color-mix(in srgb, var(--brand) 28%, transparent);
+}
+.cell[data-lvl="2"] {
+  background: color-mix(in srgb, var(--brand) 48%, transparent);
+}
+.cell[data-lvl="3"] {
+  background: color-mix(in srgb, var(--brand) 70%, transparent);
+}
+.cell[data-lvl="4"] {
+  background: var(--brand);
+}
+.cell:hover {
+  outline-color: var(--text);
+}
+.gh-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 0 var(--pad) var(--pad);
+}
+.gh-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+}
+.gh-legend .sw {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: block;
+}
+.gh-note {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+/* "live from github" in the status line, and the refresh control in the header */
+.gh-note.is-live {
+  color: var(--brand);
+}
+.gh-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.gh-refresh {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1;
+  width: 1.4rem;
+  height: 1.4rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--muted);
+  transition:
+    color 0.16s var(--ease),
+    border-color 0.16s var(--ease);
+}
+.gh-refresh:hover,
+.gh-refresh[data-busy] {
+  color: var(--brand);
+  border-color: var(--brand);
+}
+.gh-refresh[data-busy] {
+  animation: gh-spin 0.9s linear infinite;
+}
+@keyframes gh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================================================================
+   7 · RÉSUMÉ
+   =========================================================================== */
+.resume-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.resume-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+}
+.resume-doc {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  padding: clamp(0.9rem, 1.8vw, 1.4rem);
+}
+.resume-doc > header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem 1.4rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-strong);
+}
+.resume-doc h3 {
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+}
+/* The role line tucked under the name. */
+.resume-doc header h3 + .cline {
+  margin-top: 0.25rem;
+}
+.resume-doc .cline {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.rblock {
+  padding-top: 0.9rem;
+}
+.rblock h4 {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--brand);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+}
+/* Muted copy through the résumé: entry descriptions, block paragraphs and the
+   notes column all share one size instead of three one-off inline values. */
+.entry p,
+.rblock > p,
+.rside .panel-bd > p {
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+/* A paragraph that follows a list inside a block gets a little air. */
+.rblock > ul + p {
+  margin-top: 0.6rem;
+}
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+.entry:last-child {
+  margin-bottom: 0;
+}
+.ehead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.15rem 1rem;
+}
+.ehead b {
+  font-weight: 600;
+}
+.ehead span {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.entry ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-top: 0.15rem;
+}
+.entry li {
+  position: relative;
+  padding-left: 0.95rem;
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+.entry li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--brand);
+}
+/* Sub-label inside a résumé block (Technical / Professional). */
+.chiprow + .label {
+  margin-top: 0.9rem;
+}
+.chiprow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+.rside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+/* Notes column sits on the page background, so it reads as a sidebar. */
+.rside .panel {
+  background: var(--bg);
+}
+.facts {
+  display: flex;
+  flex-direction: column;
+}
+.facts li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.82rem;
+}
+.facts li:last-child {
+  border-bottom: 0;
+}
+.facts .k {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.facts .v {
+  color: var(--text);
+  text-align: right;
+}
+
+/* ===========================================================================
+   8 · BLOG  (compact rows that stretch to fill the panel)
+   =========================================================================== */
+.post-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.post {
+  background: var(--surface);
+  padding: clamp(0.8rem, 1.6vw, 1.15rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  transition: background 0.18s var(--ease);
+}
+/* The title link is stretched over the whole card, so the card is one big
+   target while staying a single, ordinary link for keyboard and screen
+   readers. */
+.post .post-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.post:hover {
+  background: var(--surface-2);
+}
+.post .pm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.post h3 {
+  font-size: 0.98rem;
+}
+.post p {
+  color: var(--text-2);
+  font-size: 0.85rem;
+}
+.post .pf {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+/* ===========================================================================
+   9 · CONTACT
+   =========================================================================== */
+.cgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+.contact-link {
+  background: var(--surface);
+  padding: clamp(0.85rem, 1.7vw, 1.2rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition:
+    background 0.16s var(--ease),
+    padding-left 0.16s var(--ease);
+}
+.contact-link:hover {
+  background: var(--surface-2);
+  padding-left: calc(clamp(0.85rem, 1.7vw, 1.2rem) + 6px);
+}
+.contact-link .k {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.contact-link .v {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.contact-link .arrow {
+  color: var(--brand);
+  font-family: var(--font-mono);
+}
+.contact-cta {
+  padding: clamp(1.1rem, 2.6vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  justify-content: center;
+  background: var(--surface);
+}
+.contact-cta h3 {
+  font-size: clamp(1.4rem, 3.4vw, 2.3rem);
+  letter-spacing: -0.03em;
+}
+.contact-cta p {
+  color: var(--text-2);
+  max-width: 52ch;
+}
+
+/* ===========================================================================
+   10 · FOOTER + SIDE RAILS
+   =========================================================================== */
+footer.site {
+  border-top: 1px solid var(--border);
+  background: var(--bg-deep);
+  padding-block: var(--gut);
+  padding-inline: var(--page-pad);
+  padding-bottom: calc(var(--gut) + env(safe-area-inset-bottom));
+}
+.foot-inner {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+.foot-inner a:hover {
+  color: var(--brand);
+}
+.keyhints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+}
+.keyhints span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rail {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: none;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+}
+.rail.left {
+  left: calc(env(safe-area-inset-left) + 8px);
+}
+.rail.right {
+  right: calc(env(safe-area-inset-right) + 8px);
+}
+.rail .bar {
+  width: 1px;
+  height: 90px;
+  background: var(--border-strong);
+}
+.progress {
+  width: 3px;
+  height: 120px;
+  background: var(--surface-2);
+  position: relative;
+  border: 1px solid var(--border);
+}
+.progress i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--brand);
+  transition: height 0.1s linear;
+}
+
+/* ===========================================================================
+   11 · OVERLAYS — terminal + shortcuts + toast
+   =========================================================================== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: none;
+  background: color-mix(in srgb, var(--bg-deep) 82%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: var(--gut);
+}
+.overlay.open {
+  display: grid;
+  place-items: center;
+  animation: fade 0.16s var(--ease);
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+.overlay-card {
+  width: min(620px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.overlay-card.narrow {
+  width: min(480px, 100%);
+}
+.ov-list {
+  padding: var(--pad);
+  display: grid;
+  gap: 0.15rem;
+  overflow-y: auto;
+}
+.ov-list .row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 0.88rem;
+}
+.ov-list .row:last-child {
+  border-bottom: 0;
+}
+.ov-list .keys {
+  display: flex;
+  gap: 0.35rem;
+}
+
+/* terminal */
+/* The close control in an overlay header. */
+.overlay .panel-hd > button {
+  color: var(--muted);
+}
+.term-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--pad);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.term-body .t-muted {
+  color: var(--muted);
+}
+.term-body .t-brand {
+  color: var(--brand);
+}
+.term-body .t-strong {
+  color: var(--text);
+}
+.term-body .t-key {
+  color: var(--text);
+}
+.term-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem var(--pad);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.term-form label {
+  color: var(--brand);
+  flex: none;
+}
+.term-form input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.2rem;
+  transform: translate(-50%, 1rem);
+  z-index: 120;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--brand);
+  background: var(--bg-deep);
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.16s var(--ease),
+    transform 0.16s var(--ease);
+}
+.toast.on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ===========================================================================
+   12 · ENTRANCE ANIMATION (JS-gated, minimal)
+   =========================================================================== */
+.js-reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.45s var(--ease),
+    transform 0.45s var(--ease);
+}
+.no-js .js-reveal,
+[data-js="off"] .js-reveal,
+.js-reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===========================================================================
+   13 · BLOG POST PAGES
+   ---------------------------------------------------------------------------
+   Post pages live in blog/ and load this same stylesheet. Their chrome is
+   deliberately lean — wordmark, theme picker, a way back — so the only new
+   styles needed are article typography plus the table of contents, which is a
+   sticky rail on wide screens and a <details> dropdown on narrow ones. The
+   open/close behaviour lives in app.js; with JS off it simply stays open.
+   =========================================================================== */
+.postbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top);
+}
+.postbar-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.6rem, 1.5vw, 1.2rem);
+  min-height: var(--nav-h);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}
+.postbar .tools {
+  margin-inline-start: auto;
+}
+
+.post-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-block: clamp(1rem, 3vh, 2.5rem);
+  padding-inline: var(--page-pad);
+}
+.post-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gut);
+}
+
+/* table of contents ------------------------------------------------------- */
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  align-self: start;
+}
+.toc > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.6rem var(--pad);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.toc > summary::-webkit-details-marker {
+  display: none;
+}
+.toc > summary::after {
+  content: "▾";
+  float: right;
+  color: var(--border-strong);
+}
+.toc[open] > summary::after {
+  content: "▴";
+}
+.toc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0 var(--pad) var(--pad);
+}
+.toc-list a {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-2);
+}
+.toc-list a:hover,
+.toc-list a[aria-current="true"] {
+  color: var(--brand);
+}
+.toc-list .lvl3 {
+  padding-inline-start: 0.9rem;
+  color: var(--muted);
+}
+
+/* article ----------------------------------------------------------------- */
+.post-article {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: clamp(1rem, 3vw, 2.2rem);
+}
+.post-article > header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.post-article h1 {
+  font-size: clamp(1.7rem, 4.5vw, 2.7rem);
+  letter-spacing: -0.03em;
+  margin-top: 0.5rem;
+}
+.post-lede {
+  color: var(--text-2);
+  font-size: 1.02rem;
+  max-width: 68ch;
+  margin-top: 0.6rem;
+}
+.draft-banner {
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px dashed var(--border-strong);
+  background: color-mix(in srgb, var(--brand) 7%, transparent);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.post-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 70ch;
+  margin-top: 1.4rem;
+  font-size: 1rem;
+  color: var(--text-2);
+}
+.post-body h2 {
+  font-size: 1.28rem;
+  color: var(--text);
+  margin-top: 0.8rem;
+  scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+.post-body h3 {
+  font-size: 1.04rem;
+  color: var(--text);
+  margin-top: 0.4rem;
+  scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+.post-body strong {
+  color: var(--text);
+}
+.post-body a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.post-body ul,
+.post-body ol {
+  padding-inline-start: 1.2rem;
+}
+.post-body ul {
+  list-style: square;
+}
+.post-body ol {
+  list-style: decimal;
+}
+.post-body li {
+  margin: 0.25rem 0;
+}
+.post-body li::marker {
+  color: var(--border-strong);
+}
+.post-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 0.05rem 0.3rem;
+}
+.post-body pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.post-body pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.post-body blockquote {
+  border-inline-start: 2px solid var(--brand);
+  padding-inline-start: 1rem;
+  color: var(--muted);
+}
+
+/* The "next post" link hangs off the right edge. */
+.post-nav .next {
+  text-align: right;
+}
+.post-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+.post-nav a {
+  color: var(--text-2);
+}
+.post-nav a:hover {
+  color: var(--brand);
+}
+.post-nav .dir {
+  display: block;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+/* wide screens: the dropdown becomes a sticky sidebar rail ----------------- */
+@media (min-width: 900px) {
+  .post-grid {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    align-items: start;
+  }
+  .toc {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--gut) + 12px);
+  }
+  .toc > summary {
+    display: none;
+  }
+}
+
+/* ===========================================================================
+   14 · RESPONSIVE
+   =========================================================================== */
+/* Every section spans the full width and stacks; density comes from laying
+   each panel's contents out in columns, not from side-by-side sections. */
+@media (min-width: 760px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  }
+  .resume-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .rside {
+    position: sticky;
+    top: calc(var(--nav-h) + var(--gut) + 14px);
+  }
+  .post-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .contact-cta {
+    grid-column: span 2;
+  }
+}
+/* Desktop: two-column hero, side rails, wider page padding, denser columns. */
+@media (min-width: 1000px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.85fr);
+  }
+  .hero-side {
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+  .rail {
+    display: flex;
+  }
+  :root {
+    --page-pad: clamp(40px, 5vw, 72px);
+  }
+  .post-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .cgrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .contact-cta {
+    grid-column: span 3;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+/* Headshot goes wide and short once the hero is single-column. */
+@media (max-width: 999px) {
+  /* Phones: keep the frame at the photo's own 4:5 so nothing is cropped, and
+     just make it smaller and centred in the side column. */
+  .headshot {
+    width: min(100%, 16rem);
+    margin-inline: auto;
+  }
+}
+/* Phones and small tablets: the nav gets its own row instead of a clipped
+   horizontal scroller, so all seven section links stay reachable. The
+   scroll offset is re-measured in JS; this is the no-JS fallback. */
+@media (max-width: 900px) {
+  html {
+    scroll-padding-top: calc(var(--nav-h) + 44px);
+  }
+  .topbar-inner {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--nav-h);
+    padding-block: 0.4rem;
+    gap: 0.25rem 0.6rem;
+  }
+  .brand {
+    margin-inline-end: auto;
+  }
+  .clock {
+    display: none;
+  }
+  nav.mainnav {
+    order: 3;
+    flex-basis: 100%;
+    margin-inline-start: 0;
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 0;
+  }
+  nav.mainnav a {
+    padding: 0.3rem 0.45rem;
+  }
+  nav.mainnav a .num {
+    display: none;
+  }
+}
+@media (max-width: 620px) {
+  .brand b {
+    display: none;
+  }
+  nav.mainnav a {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.38rem;
+  }
+  .tools .iconbtn {
+    display: none;
+  }
+  .tools select {
+    max-width: 8.5rem;
+  }
+  .case-head {
+    align-items: flex-start;
+  }
+}
+
+/* No physical keyboard, no keybind listings. Two conditions on purpose: the
+   width catches narrow viewports (and devtools' mobile emulation), while the
+   pointer query catches touch devices that are physically wide, like a phone
+   in landscape. The terminal keeps its button — it works fine with an
+   on-screen keyboard — but the shortcuts sheet and its opener do not. */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  .keyhints,
+  .kbd-hint,
+  #keys,
+  #open-keys {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ===========================================================================
+   15 · PRINT — the résumé only, on white, without chrome
+   =========================================================================== */
+/* ---------------------------------------------------------------------------
+   Printing. A zero page margin leaves the browser nowhere to draw its own
+   header/footer strip (the URL, date and page number); the white border is
+   supplied by the body padding below instead, so the visual margin is the
+   same but without the URL across the top.
+   --------------------------------------------------------------------------- */
+@page {
+  margin: 0;
+}
+
+@media print {
+  body::before,
+  body::after {
+    display: none;
+  }
+  header.topbar,
+  .postbar,
+  .toc,
+  .post-nav,
+  footer.site,
+  .rail,
+  .overlay,
+  .toast,
+  .skip,
+  .filters,
+  .resume-bar,
+  .rside,
+  #home,
+  #about,
+  #skills,
+  #projects,
+  #blog,
+  #contact {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    padding: 12mm 14mm;
+  }
+  main {
+    display: block;
+    padding: 0;
+    max-width: none;
+  }
+  #resume {
+    border: 0;
+    background: #fff;
+  }
+  #resume .panel-hd {
+    display: none;
+  }
+  .resume-doc {
+    border: 0;
+    padding: 0;
+    background: #fff;
+  }
+  .resume-grid {
+    grid-template-columns: 1fr;
+  }
+  /* Dark palettes leave `--text-2` pale, which is nearly invisible on white
+     paper, so force the résumé's body copy black too. */
+  .rblock h4,
+  .rblock > p,
+  .entry p,
+  .cline,
+  .entry li::before {
+    color: #000;
+  }
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+}
