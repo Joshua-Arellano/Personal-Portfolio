@@ -1,0 +1,188 @@
+<!doctype html>
+<!--
+  ============================================================================
+  josh-a.dev  ·  blog post
+  ---------------------------------------------------------------------------
+  Loads ../styles.css and ../app.js — the same two files index.html uses, so the
+  theme, palette and type are shared. The chrome here is deliberately lean: a
+  wordmark, the theme picker and a way back. app.js is written so every lookup
+  is guarded, which is why it is safe on a page with none of index.html's
+  widgets. Rebuild these pages by copying _template.html.
+  ============================================================================
+-->
+<html lang="en" dir="ltr" data-theme="tokyo-night" data-js="on" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#1a1b26" />
+
+    <title>Building CLI/TUI tools · josh-a.dev</title>
+    <meta name="description" content="Why the terminal is the fastest interface, and how I build tools that live in it." />
+    <meta name="author" content="Joshua Arellano" />
+    <link rel="canonical" href="https://josh-a.dev/blog/building-cli-tui-tools.html" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="josh-a.dev" />
+    <meta property="og:title" content="Building CLI/TUI tools" />
+    <meta property="og:description" content="Why the terminal is the fastest interface, and how I build tools that live in it." />
+    <meta property="og:url" content="https://josh-a.dev/blog/building-cli-tui-tools.html" />
+    <meta property="og:image" content="https://josh-a.dev/headshot.jpg" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Building CLI/TUI tools" />
+    <meta name="twitter:description" content="Why the terminal is the fastest interface, and how I build tools that live in it." />
+    <meta name="twitter:image" content="https://josh-a.dev/headshot.jpg" />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231a1b26'/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+    />
+
+    <!-- Restores the saved theme before first paint. Must stay inline: from the
+         deferred app.js it would run too late and flash the wrong palette. -->
+    <script>
+      (function () {
+        var root = document.documentElement;
+        /* JS is running, so drop the no-js class straight away. */
+        root.classList.remove("no-js");
+        try {
+          var t = localStorage.getItem("josh-a.dev:theme");
+          if (t && /^[a-z0-9-]+$/.test(t)) root.setAttribute("data-theme", t);
+          else if (
+            window.matchMedia &&
+            matchMedia("(prefers-color-scheme: light)").matches
+          )
+            root.setAttribute("data-theme", "catppuccin-latte");
+          if (localStorage.getItem("josh-a.dev:js") === "0")
+            root.setAttribute("data-js", "off");
+        } catch (e) {
+          /* private mode / file:// — defaults are fine */
+        }
+      })();
+    </script>
+
+    <link rel="stylesheet" href="../styles.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Building CLI/TUI tools",
+        "description": "Why the terminal is the fastest interface, and how I build tools that live in it.",
+        "url": "https://josh-a.dev/blog/building-cli-tui-tools.html",
+        "author": { "@type": "Person", "name": "Joshua Arellano" },
+        "publisher": { "@type": "Person", "name": "Joshua Arellano" },
+        "isPartOf": { "@type": "Blog", "name": "josh-a.dev blog" }
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="postbar">
+      <div class="postbar-inner">
+        <a class="brand" href="../index.html" aria-label="josh-a.dev — home">
+          <span class="mark mono" aria-hidden="true">J</span>
+          <b class="mono">josh-a<span>.dev</span></b>
+        </a>
+        <span class="label">blog</span>
+        <span class="tools">
+          <select
+            class="js-only"
+            id="theme-select"
+            aria-label="Choose a colour theme"
+          >
+            <option value="tokyo-night">tokyo-night</option>
+          </select>
+          <a class="btn sm" href="../index.html">&larr; Portfolio</a>
+        </span>
+      </div>
+    </header>
+
+    <main class="post-main" id="main">
+      <div class="post-grid">
+        <!-- Table of contents. A <details> dropdown on narrow screens, a sticky
+             rail from 900px up. With JS off it simply stays open. -->
+        <details class="toc" open>
+          <summary>On this page</summary>
+          <nav class="toc-list" aria-label="On this page">
+                        <a href="#why-the-terminal">Why the terminal</a>
+            <a href="#constraints-that-make-tools-good">Constraints that make tools good</a>
+            <a href="#a-tiny-example">A tiny example</a>
+          </nav>
+        </details>
+
+        <article class="post-article">
+          <header>
+            <p class="post-meta">
+              <span class="accent">Tooling</span>
+              <span>Draft</span>
+              <span>5 min read once written</span>
+            </p>
+            <h1>Building CLI/TUI tools</h1>
+            <p class="post-lede">Why the terminal is the fastest interface, and how I build tools that live in it.</p>
+            <p class="draft-banner">
+              Placeholder body — an outline to write over, not finished prose.
+              Swap in your own words, then delete this banner.
+            </p>
+          </header>
+
+          <div class="post-body">
+            <p>
+              <strong>Start with the claim:</strong> the terminal is the fastest
+              interface you will ever use, and most GUI tools are slower for no
+              benefit.
+            </p>
+
+            <h2 id="why-the-terminal">Why the terminal</h2>
+            <p>
+              Speed of intention — typing what you mean versus hunting for it.
+            </p>
+
+            <h2 id="constraints-that-make-tools-good">Constraints that make tools good</h2>
+            <ul>
+              <li>Composability: text in, text out, exit codes that mean something.</li>
+              <li>Predictable flags, and sane defaults with no flags at all.</li>
+              <li>Fail loudly, and say what to do about it.</li>
+            </ul>
+
+            <h2 id="a-tiny-example">A tiny example</h2>
+            <p>The smallest useful shape — one command, one job:</p>
+            <pre><code>$ tool list --open
+$ tool close 42 --note "fixed in #118"</code></pre>
+          </div>
+
+          <nav class="post-nav" aria-label="Post navigation">
+            <a href="learning-type-safe-languages.html"><span class="dir">Previous</span>Learning type safety languages</a>
+            <a href="../index.html#blog"><span class="dir">All posts</span>Blog index</a>
+          </nav>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site">
+      <div class="foot-inner">
+        <span
+          >&copy; <span id="year">2026</span> Joshua Arellano &middot; built
+          with plain HTML/CSS/JS</span
+        >
+        <span
+          ><a href="../index.html">Portfolio</a> &middot;
+          <a href="../index.html#blog">All posts</a></span
+        >
+      </div>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>
