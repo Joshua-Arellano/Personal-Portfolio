@@ -116,8 +116,10 @@
         <details class="toc" open>
           <summary>On this page</summary>
           <nav class="toc-list" aria-label="On this page">
-                        <a href="#what-runs">What runs</a>
+            <a href="#the-box">The box</a>
+            <a href="#what-runs">What runs</a>
             <a href="#how-its-wired">How it's wired</a>
+            <a href="#hosting-this-site">Hosting this site</a>
             <a href="#what-i-keep-breaking">What I keep breaking</a>
           </nav>
         </details>
@@ -126,40 +128,180 @@
           <header>
             <p class="post-meta">
               <span class="accent">HomeLab</span>
-              <span>Draft</span>
-              <span>5 min read once written</span>
+              <span>18 Oct 2026</span>
+              <span>5 min read</span>
             </p>
             <h1>My HomeLab Setup</h1>
             <p class="post-lede">What runs in my homelab, how it's wired up, and what I keep breaking along the way.</p>
-            <p class="draft-banner">
-              Placeholder body — an outline to write over, not finished prose.
-              Swap in your own words, then delete this banner.
-            </p>
           </header>
 
           <div class="post-body">
             <p>
-              <strong>Set the scene:</strong> what the box is, how it is powered, and
-              what problem the whole thing was supposed to solve.
+              I run a headless box under my desk called <code>saturn</code>. It
+              is a Debian 13 machine with six cores and 18 GB of RAM, and almost
+              everything I self-host lives on it — my media, my notes, my
+              photos, my passwords, and, as of this week, the site you are
+              reading. This is the tour I wish I had when I started: what runs,
+              how it is wired, and the parts that still keep me honest.
+            </p>
+
+            <h2 id="the-box">The box</h2>
+            <p>
+              It is not exotic hardware — an old desktop that had a spare SATA
+              disk and a couple of free USB ports. It runs Debian 13 (trixie)
+              headless, so there is no desktop environment and no keyboard in
+              normal use. I administer it entirely over SSH from a laptop, which
+              forces every change to be something I can do from a terminal and
+              repeat next time.
+            </p>
+            <p>
+              Two disks matter. A 233 GB internal SSD holds the OS, the service
+              config and the databases. Everything with real write traffic —
+              media, downloads, caches, and most service data — lives on a 1 TB
+              NVMe drive in a USB enclosure, mounted at
+              <code>/mnt/media</code>. That split means a runaway download or a
+              photo import cannot fill the disk the databases are breathing on.
             </p>
 
             <h2 id="what-runs">What runs</h2>
+            <p>
+              A mix of native systemd services and Docker Compose projects,
+              depending on what each one wants.
+            </p>
+            <h3 id="native-services">Installed straight on the host</h3>
             <ul>
-              <li>Each service, and one line on what it is for.</li>
-              <li>What is containerised versus installed on the host, and why.</li>
+              <li><strong>Jellyfin</strong> — my media library.</li>
+              <li>
+                <strong>Minecraft</strong> — a Paper server for friends, which
+                is its own small adventure in Java versions.
+              </li>
+              <li><strong>Cockpit</strong> — a web console for quick checks.</li>
             </ul>
+            <h3 id="docker-services">In Docker</h3>
+            <ul>
+              <li>
+                <strong>Nextcloud</strong> — files and sync, behind Caddy with a
+                small internal certificate authority.
+              </li>
+              <li>
+                <strong>Immich</strong> — photos and video, with its own
+                Postgres, Redis and machine-learning worker.
+              </li>
+              <li>
+                <strong>Vaultwarden</strong> — a Bitwarden-compatible vault for
+                my passwords.
+              </li>
+              <li>
+                <strong>qBittorrent</strong> — routed through a gluetun
+                WireGuard tunnel to a Mullvad exit, so nothing torrents if the
+                tunnel drops.
+              </li>
+              <li>
+                <strong>Plex</strong> — the same library through a different app.
+              </li>
+              <li>
+                <strong>Homepage</strong> — a single dashboard that links the
+                rest together.
+              </li>
+              <li><strong>This site</strong> — which gets its own section below.</li>
+            </ul>
+            <p>
+              The rule I settled on: something goes native if it wants the
+              hardware directly or barely uses resources, and it goes in a
+              container if it drags dependencies I do not want leaking onto the
+              host. Immich is the clearest case — its database, cache and ML
+              model all belong to it, not to me.
+            </p>
 
             <h2 id="how-its-wired">How it's wired</h2>
-            <p>Reverse proxy, DNS, storage. Sketch the path a request takes:</p>
-            <pre><code>internet &rarr; reverse proxy &rarr; service
-            &darr;
-        local DNS &rarr; service</code></pre>
+            <p>
+              Remote access is Tailscale. None of the dashboards face the open
+              internet: the firewall is nftables with a default-deny policy, and
+              the only inbound paths are the LAN, the tailnet, and the one
+              public tunnel below. A request from my laptop looks like this:
+            </p>
+            <pre><code>laptop  &rarr; tailnet  &rarr; 100.x address &rarr; service
+laptop  &rarr; LAN      &rarr; 192.168.x.x   &rarr; service
+internet &rarr; tunnel  &rarr; portfolio          (only josh-a.dev)</code></pre>
+            <p>
+              The storage layout matters here too. <code>/mnt/media</code> is a
+              shared group called <code>media</code> with the setgid bit set, so
+              new files inherit the group and Jellyfin, the torrent client and
+              the backup jobs can all read what they need without me chowning
+              things by hand.
+            </p>
+
+            <h2 id="hosting-this-site">Hosting this site</h2>
+            <p>
+              This portfolio is served from <code>saturn</code> too. It is the
+              one service I deliberately expose publicly, and it is the smallest
+              stack on the machine: an unprivileged nginx container serving a
+              read-only bind mount of the site folder, and a
+              <code>cloudflared</code> container that opens an outbound tunnel
+              to Cloudflare. Because the tunnel is outbound-only and points at
+              <code>web:8080</code> on the internal Docker network, nothing has
+              to accept inbound connections, and nginx never has to think about
+              certificates or the public internet.
+            </p>
+            <p>
+              The nginx container is as locked down as I could make a container
+              that serves files: <code>read_only: true</code>, all capabilities
+              dropped, <code>no-new-privileges</code>, and a 128 MB memory cap.
+              The site directory is mounted read-only, so a compromise gives an
+              attacker a web root they cannot even write to.
+            </p>
+            <p>
+              Deploys are a fast-forward and nothing else. A CI key on the
+              server is restricted with <code>command=</code> to run a single
+              <code>deploy.sh</code>, so a leaked key cannot get a shell or read
+              anything else — it can only run:
+            </p>
+            <pre><code>git fetch origin main
+git merge --ff-only origin/main</code></pre>
+            <p>
+              The script refuses to run if local history has diverged from
+              <code>origin/main</code>, and only ever advances forward. Since
+              nginx bind-mounts the working tree read-only, a push to
+              <code>main</code> goes live immediately with no container restart
+              and no build step. It is the most boring deploy I could design,
+              which is exactly the point.
+            </p>
 
             <h2 id="what-i-keep-breaking">What I keep breaking</h2>
+            <p>The honest part.</p>
             <ul>
-              <li>The honest section — what you redo most often.</li>
-              <li>What you would automate today if you started over.</li>
+              <li>
+                <strong>TRIM does not work.</strong> The SSD sits on a USB
+                controller that does not support the streams the UAS driver
+                needs, so it falls back to the old <code>usb-storage</code>
+                driver. No discard, and sustained write performance will degrade
+                over time. The fix is hardware — moving the enclosure to a
+                different controller — not a mount flag.
+              </li>
+              <li>
+                <strong>Immich and Nextcloud have no automated backups.</strong>
+                Vaultwarden backs itself up nightly and Minecraft has a manual
+                snapshot, but the two services holding the most irreplaceable
+                data rely on me remembering. That is the next thing I fix.
+              </li>
+              <li>
+                <strong>The Minecraft console is dead.</strong> Paper replaces
+                stdin with <code>/dev/null</code>, so <code>op</code>,
+                <code>save-all</code> and friends have nowhere to go. The fix is
+                RCON or a stdin FIFO; today I just edit files and restart.
+              </li>
+              <li>
+                <strong>The memory budget is tight.</strong> With 18 GB shared
+                between two media servers, Immich's ML model and a pile of
+                resident containers, every new service is a negotiation. I check
+                <code>free -h</code> before raising any limit.
+              </li>
             </ul>
+            <p>
+              That is the whole setup. It is not clever, and it breaks in
+              predictable ways, but every piece of it is something I can rebuild
+              from a shell and understand end to end.
+            </p>
           </div>
 
           <nav class="post-nav" aria-label="Post navigation">
