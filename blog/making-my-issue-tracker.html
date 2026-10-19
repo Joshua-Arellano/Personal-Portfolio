@@ -127,54 +127,137 @@
           <header>
             <p class="post-meta">
               <span class="accent">Devlog</span>
-              <span>Draft</span>
-              <span>6 min read once written</span>
+              <span>18 Oct 2026</span>
+              <span>6 min read</span>
             </p>
             <h1>Making my Issue-Tracker</h1>
             <p class="post-lede">How the API issue tracker came together — modelling issues, routes, and the bits I'd redo.</p>
-            <p class="draft-banner">
-              Placeholder body — an outline to write over, not finished prose.
-              Swap in your own words, then delete this banner.
-            </p>
           </header>
 
           <div class="post-body">
             <p>
-              <strong>Open with the itch:</strong> big projects break quietly. By the
-              time someone notices, the context is gone — who hit it, how to
-              reproduce it, whether it was ever fixed.
+              This started as coursework and turned into the project I actually
+              reach for. It is a REST API for tracking the bugs inside a
+              codebase — the ones that go quiet in a chat thread and never come
+              back. The code lives in my <code>issue-tracker</code> repo on
+              GitHub.
             </p>
 
             <h2 id="the-problem">The problem</h2>
-            <ul>
-              <li>What a tracker has to capture before it is worth using.</li>
-              <li>Why status and priority alone are not enough.</li>
-              <li>Who the interface is actually for.</li>
-            </ul>
+            <p>
+              Every project I have worked on fails the same way: something
+              breaks, someone notices, and by the time anyone goes looking the
+              context is gone — who hit it, how to reproduce it, whether it was
+              ever fixed.
+            </p>
+            <p>
+              So the design goal was narrow:
+              <strong>one issue should be enough on its own.</strong> No "see
+              the thread", no "ask the person who found it". If a single
+              document does not tell you what is wrong and what to do next, the
+              tracker has already failed.
+            </p>
 
             <h2 id="modelling-an-issue">Modelling an issue</h2>
-            <p>
-              One issue is the whole design, really. The shape I settled on:
-            </p>
+            <p>One issue is most of the design. The shape I settled on:</p>
             <pre><code>{
-  "title": "…",
+  "title": "Dark mode drops websocket messages when suspended",
+  "description": "…",
   "status": "open",
   "priority": "high",
-  "stepsToReproduce": ["…", "…"],
-  "assignee": "…",
-  "createdAt": "…",
-  "timeSpent": 0
+  "stepsToReproduce": "1. Create a test account…\n2. Trigger the action twice…",
+  "classification": "unclassified",
+  "author": { "userId": "…", "fullName": "…" },
+  "assignedTo": { "userId": "…", "fullName": "…" },
+  "createdOn": "…",
+  "comments": [],
+  "testCases": [],
+  "timeLog": []
 }</code></pre>
+            <p>
+              Status
+              (<code>open</code>/<code>in-progress</code>/<code>closed</code>)
+              answers <em>where is the work</em>. Priority
+              (<code>low</code>/<code>medium</code>/<code>high</code>) answers
+              <em>how soon</em>. Classification
+              (<code>unclassified</code>/<code>approved</code>/<code>unapproved</code>/<code>duplicate</code>)
+              answers <em>is this even real</em>. Comments, test cases and time
+              logs are embedded arrays — one document, one read, no joins.
+            </p>
+
             <h3 id="fields-worth-keeping">Fields worth keeping</h3>
             <ul>
-              <li>Which field earned its place, and which one you dropped.</li>
+              <li>
+                <strong
+                  ><code>stepsToReproduce</code> as one string, not an
+                  array.</strong
+                >
+                In the repo it is a single free-text field. A numbered block
+                pasted into one string is easier to write and read than
+                structured steps, and nothing downstream needs the structure.
+              </li>
+              <li>
+                <strong
+                  ><code>classification</code> separate from
+                  <code>status</code>.</strong
+                >
+                Keeping triage and progress apart stopped me conflating "we
+                decided this is a duplicate" with "the work is done".
+              </li>
+              <li>
+                <strong>Embedded sub-resources.</strong> Comments, test cases
+                and time entries live inside the issue document. The trade is
+                that sub-resource writes go through
+                <code>$push</code>/<code>$pull</code> and, for a single test
+                case, an <code>arrayFilters</code> update — but reads stay a
+                single lookup.
+              </li>
+              <li>
+                <strong><code>{ userId, fullName }</code> snapshots.</strong>
+                Author and assignee carry their display name with them, so
+                rendering an issue never depends on another service being up.
+              </li>
             </ul>
 
             <h2 id="what-id-do-differently">What I'd do differently</h2>
             <ul>
-              <li>The routes / controllers / data-layer split.</li>
-              <li>Formatting and consistency across endpoints.</li>
-              <li>What you would reach for first next time.</li>
+              <li>
+                <strong
+                  >The routes → controllers → data seam is right, but the
+                  controllers still do too much.</strong
+                >
+                <code>createIssue</code> calls <code>insertIssue</code> without
+                awaiting it and responds with the object it built rather than
+                the inserted document. <code>updateIssueById</code> builds an
+                <code>ObjectId</code> without the <code>isValid</code> guard the
+                other data functions use, so a malformed id throws instead of
+                returning a 404.
+              </li>
+              <li>
+                <strong>The <code>id</code> field lies about its type.</strong>
+                It is derived from <code>_id</code> with a cast that ends in
+                <code>as unknown as number</code> — a string wearing a number's
+                clothes. I would fix the type and drop the cast.
+              </li>
+              <li>
+                <strong>Naming drifted.</strong>
+                <code>stepsToReproduce</code>, <code>createdOn</code>,
+                <code>assignedTo</code> — I would pick one convention and hold
+                it across the schema.
+              </li>
+              <li>
+                <strong>Half-finished fields.</strong> <code>timeLog</code>
+                exists with no endpoints, and a <code>FixInfo</code> type sits
+                commented out. Either finish them or delete them.
+              </li>
+              <li>
+                <strong
+                  >Splitting <code>app.ts</code> from
+                  <code>index.ts</code> was the best late call.</strong
+                >
+                It let the tests run without a live Atlas cluster. I would do it
+                on day one next time.
+              </li>
             </ul>
           </div>
 
