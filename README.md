@@ -44,8 +44,14 @@ each `<h2>`/`<h3>`, so those have to be there.
 ## Deploying
 
 The site is self-hosted — nginx on a home server, put on josh-a.dev through a
-Cloudflare Tunnel. Pushing to `main` is the whole deploy: a GitHub Action
-fast-forwards the checkout on the server, and nothing else has to run.
+Cloudflare Tunnel. Pushing to `main` is the whole deploy: the server pulls its
+checkout forward on a five-minute timer, so a push is live shortly after it
+lands.
+
+That deploy has to be a pull rather than a push, because the server cannot be
+reached from the internet. The tunnel only carries HTTP, so a CI runner has no
+way to open an SSH connection to it. Running `/opt/portfolio/deploy.sh` on the
+server does the same thing on demand.
 
 The home server is not meant to be a single point of failure.
 [`worker/`](worker/README.md) holds a Cloudflare Worker that would serve the same
