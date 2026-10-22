@@ -1,0 +1,30 @@
+# Deployed with `npx wrangler deploy` from this directory. See README.md.
+
+name = "josh-a-dev-failover"
+main = "failover.js"
+compatibility_date = "2026-10-21"
+
+# No public *.workers.dev URL: the zone routes below are the only way in, so
+# the failover copy cannot be reached at a second hostname.
+workers_dev = false
+
+# `wrangler tail` then shows every failover decision live, which is how you
+# confirm the Worker is doing its job during an outage.
+[observability]
+enabled = true
+
+[vars]
+PRIMARY_ORIGIN = "origin.josh-a.dev"
+FALLBACK_ORIGIN = "portfolio.pages.dev"
+ORIGIN_TIMEOUT_MS = "3000"
+
+# Routes run before the origin, so these intercept josh-a.dev even though the
+# DNS record still points at the tunnel. Disabling the Worker therefore leaves
+# a working (if unprotected) site rather than a dead hostname.
+[[routes]]
+pattern = "josh-a.dev/*"
+zone_name = "josh-a.dev"
+
+[[routes]]
+pattern = "www.josh-a.dev/*"
+zone_name = "josh-a.dev"
