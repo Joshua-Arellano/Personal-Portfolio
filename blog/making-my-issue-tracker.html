@@ -115,9 +115,12 @@
         <details class="toc" open>
           <summary>On this page</summary>
           <nav class="toc-list" aria-label="On this page">
-                        <a href="#the-problem">The problem</a>
+            <a href="#the-problem">The problem</a>
             <a href="#modelling-an-issue">Modelling an issue</a>
             <a href="#fields-worth-keeping" class="lvl3">Fields worth keeping</a>
+            <a href="#the-api-surface">The API surface</a>
+            <a href="#validation-at-the-edge" class="lvl3">Validation at the edge</a>
+            <a href="#who-is-writing" class="lvl3">Who is writing</a>
             <a href="#what-id-do-differently">What I'd do differently</a>
           </nav>
         </details>
@@ -127,7 +130,7 @@
             <p class="post-meta">
               <span class="accent">Devlog</span>
               <span>18 Oct 2026</span>
-              <span>6 min read</span>
+              <span>8 min read</span>
             </p>
             <h1>Making my Issue-Tracker</h1>
             <p class="post-lede">How the API issue tracker came together — modelling issues, routes, and the bits I'd redo.</p>
@@ -138,8 +141,14 @@
               This started as coursework and turned into the project I actually
               reach for. It is a REST API for tracking the bugs inside a
               codebase — the ones that go quiet in a chat thread and never come
-              back. The code lives in my <code>issue-tracker</code> repo on
-              GitHub.
+              back. There is a
+              <a
+                href="https://issue-tracker-410698782835.us-central1.run.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >running copy</a
+              >
+              deployed on Cloud Run.
             </p>
 
             <h2 id="the-problem">The problem</h2>
@@ -217,6 +226,78 @@
                 rendering an issue never depends on another service being up.
               </li>
             </ul>
+
+            <h2 id="the-api-surface">The API surface</h2>
+            <p>
+              Fifteen endpoints under <code>/issues</code>, plus a
+              <code>/health</code>. Listing them is the fastest way to see the
+              shape of the thing:
+            </p>
+            <pre><code>GET    /issues                             list; ?q= searches titles and descriptions
+GET    /issues/:id                         one issue
+POST   /issues                             create
+PATCH  /issues/:id                         partial update
+PATCH  /issues/:id/status                  open | in-progress | closed
+PATCH  /issues/:id/classify                unclassified | approved | unapproved | duplicate
+PATCH  /issues/:id/assign                  { userId, fullName }
+DELETE /issues/:id
+
+POST   /issues/:id/comments                add
+PATCH  /issues/:id/comments/:commentId     edit
+DELETE /issues/:id/comments/:commentId     remove
+
+POST   /issues/:id/test-cases              add
+PATCH  /issues/:id/test-cases/:testCaseId  { passed }
+
+POST   /issues/:id/time-log                { hoursWorked }
+GET    /issues/:id/time-log/summary        total hours for one issue</code></pre>
+            <p>
+              Status, classification and assignment get their own verbs instead
+              of riding on the general <code>PATCH</code>. It reads better — a
+              client setting a status is saying something narrower than "update
+              this" — and each transition gets a schema of its own rather than
+              one loose partial.
+            </p>
+
+            <h3 id="validation-at-the-edge">Validation at the edge</h3>
+            <p>
+              Nothing reaches a controller unparsed. Every route that takes
+              input runs it through a Zod schema first —
+              <code>validateBody</code>, <code>validateQuery</code> or
+              <code>validateParams</code> — which parses the value and replaces
+              it on the request, so a handler only ever sees data that already
+              typechecks. A failure short-circuits with a 400 that names the
+              field that failed:
+            </p>
+            <pre><code>{
+  "error": "ValidationFailed",
+  "details": [
+    { "path": "status",
+      "message": "Invalid option: expected one of \"open\"|\"in-progress\"|\"closed\"" }
+  ]
+}</code></pre>
+            <p>
+              Two details in there are worth copying. The list route's query is
+              validated like a body, so <code>?status=done</code> is a 400
+              instead of a silent empty result — and <code>page</code> and
+              <code>limit</code> come out of that same schema already coerced to
+              numbers and capped at 50. And <code>updateIssueSchema</code> is
+              the create schema made partial, plus a refinement that rejects an
+              empty object, so <code>PATCH</code> cannot be used to send nothing
+              and still get a 200.
+            </p>
+
+            <h3 id="who-is-writing">Who is writing</h3>
+            <p>
+              The routes that create something — an issue, a comment, a test
+              case, a time entry — carry an <code>attachCurrentUser</code>
+              middleware. Author and commenter come from the request and never
+              from the body, so an <code>author</code> field in the JSON is
+              ignored, which is the only reason the embedded
+              <code>{ userId, fullName }</code> snapshots can be trusted at all.
+              Today that middleware is a stub handing back one hardcoded user.
+              It is the seam where real authentication goes.
+            </p>
 
             <h2 id="what-id-do-differently">What I'd do differently</h2>
             <ul>
