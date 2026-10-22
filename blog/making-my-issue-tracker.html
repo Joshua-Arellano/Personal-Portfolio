@@ -300,35 +300,39 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
             </p>
 
             <h2 id="what-id-do-differently">What I'd do differently</h2>
+            <p>
+              The first version of this list was four complaints about code that
+              has since changed. <code>insertIssue</code> is awaited now and
+              returns the inserted document rather than the object
+              <code>createIssue</code> assembled; ids are hex strings, not a cast
+              that ended in <code>as unknown as number</code>; the
+              <code>isValid</code> guard left the data layer for
+              <code>parseId</code>, which rejects a malformed id at the edge
+              before any controller runs; and <code>timeLog</code> has the two
+              endpoints it was missing. What survives is below.
+            </p>
             <ul>
               <li>
-                <strong
-                  >The routes → controllers → data seam is right, but the
-                  controllers still do too much.</strong
-                >
-                <code>createIssue</code> calls <code>insertIssue</code> without
-                awaiting it and responds with the object it built rather than
-                the inserted document. <code>updateIssueById</code> builds an
-                <code>ObjectId</code> without the <code>isValid</code> guard the
-                other data functions use, so a malformed id throws instead of
-                returning a 404.
-              </li>
-              <li>
-                <strong>The <code>id</code> field lies about its type.</strong>
-                It is derived from <code>_id</code> with a cast that ends in
-                <code>as unknown as number</code> — a string wearing a number's
-                clothes. I would fix the type and drop the cast.
-              </li>
-              <li>
-                <strong>Naming drifted.</strong>
+                <strong>Naming still drifts.</strong>
                 <code>stepsToReproduce</code>, <code>createdOn</code>,
-                <code>assignedTo</code> — I would pick one convention and hold
-                it across the schema.
+                <code>assignedTo</code>, <code>loggedOn</code> — I would pick one
+                convention and hold it across the schema.
               </li>
               <li>
-                <strong>Half-finished fields.</strong> <code>timeLog</code>
-                exists with no endpoints, and a <code>FixInfo</code> type sits
-                commented out. Either finish them or delete them.
+                <strong>One field is still a promise.</strong> The
+                <code>FixInfo</code> type sits commented out in
+                <code>types/issue.ts</code>, with <code>fixed</code> alongside
+                it. Either finish it or delete it; a commented-out type is not a
+                plan.
+              </li>
+              <li>
+                <strong>The controllers still repeat themselves.</strong>
+                Extracting <code>parseId</code> and <code>parseCommentId</code>
+                removed the duplicated guard, but every handler that takes an id
+                still opens with the same preamble —
+                <code>const objectId = parseId(req, res); if (!objectId) return;</code>
+                — before it does anything else. A wrapper that parsed the id and
+                passed it down would delete those lines from all thirteen.
               </li>
               <li>
                 <strong
