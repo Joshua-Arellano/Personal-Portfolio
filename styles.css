@@ -1153,7 +1153,9 @@ main {
   flex-wrap: wrap;
   gap: 0.35rem;
 }
-.pcard .foot {
+/* Link-out row: a label on the left, an action on the right. Shared by the
+   project cards and the featured case study, which spans the grid. */
+.foot {
   margin-top: auto;
   padding-top: 0.6rem;
   border-top: 1px dashed var(--border);
@@ -1167,10 +1169,10 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
-.pcard .foot a {
+.foot a {
   color: var(--brand);
 }
-.pcard .foot a:hover {
+.foot a:hover {
   text-decoration: underline;
 }
 
