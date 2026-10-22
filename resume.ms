@@ -73,22 +73,18 @@ contact@josh-a.dev \(em josh-a.dev \(em github.com/Joshua-Arellano \(em Missouri
 .vs 10.5p
 
 .SHD SUMMARY
-Aspiring developer who works hard almost 24/7 and loves learning how everything works
-down to the 1's and 0's. Focused on type-safe languages, terminal tooling and
-open-source software. Currently building a TypeScript API issue tracker and finishing
-an Application & Web Development degree at Ranken Technical College.
+Aspiring developer focused on type-safe languages, terminal tooling and open-source
+software. Currently building a TypeScript API issue tracker and finishing an
+Application & Web Development degree at Ranken Technical College.
 
 .SHD EDUCATION
-.ENT "Ranken Technical College" "2024 \(en 2026"
+.ENT "Ranken Technical College" "2025 \(en 2027"
 .RS
 Application & Web Development (AWD)
 .BUL
 Coursework in HTML & CSS, JavaScript, C# and React/Node.js.
 .BUL
 Capstone work: full-stack web apps and database-driven desktop tools.
-.ENT "Pacific High School" "2019 \(en 2025"
-.RS
-High School Diploma
 
 .SHD EXPERIENCE
 .ENT "Creator & Maintainer \(em API Issue Tracker" "2026 \(en present"
@@ -110,15 +106,6 @@ with food safety regulations.
 Collaborated with team members to ensure smooth operation during peak hours.
 .BUL
 Managed inventory levels by FIFO, and handled low stock and waste.
-.ENT "Ice Cream Manufacturer \(em Clementine's Creamery" "2020 \(en 2021"
-.RS
-Summer job, two seasons.
-.BUL
-Prepared ice cream from scratch and prepped ingredients for all Clementine's Creamery
-locations.
-.BUL
-Operated ice cream machines to produce high-quality products while adhering to safety
-guidelines.
 .SHD PROJECTS
 .ENT "API Issue Tracker" "TypeScript \(em Express \(em MongoDB"
 .RS
@@ -137,11 +124,7 @@ CRUD desktop app to manage NES collections and launch games.
 .SHD SKILLS
 .RS
 \fBTechnical:\fR HTML/CSS, JS/TS, Node.js, React/Vite, C#, .NET / ASP.NET, Express,
-Lua, object-oriented design, MongoDB, MySQL, Arch, NeoVim, Git, Ollama, OpenCode.
-.sp 0.3v
-.RS
-\fBProfessional:\fR effective communication, team player, strong problem solver,
-time management.
+Lua, MongoDB, MySQL, Git, object-oriented design.
 
 .SHD "LANGUAGES & INTERESTS"
 .RS
