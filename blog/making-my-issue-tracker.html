@@ -21,19 +21,34 @@
     <meta name="theme-color" content="#1a1b26" />
 
     <title>Making my Issue-Tracker · josh-a.dev</title>
-    <meta name="description" content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo." />
+    <meta
+      name="description"
+      content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo."
+    />
     <meta name="author" content="Joshua Arellano" />
-    <link rel="canonical" href="https://josh-a.dev/blog/making-my-issue-tracker.html" />
+    <link
+      rel="canonical"
+      href="https://josh-a.dev/blog/making-my-issue-tracker.html"
+    />
 
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="josh-a.dev" />
     <meta property="og:title" content="Making my Issue-Tracker" />
-    <meta property="og:description" content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo." />
-    <meta property="og:url" content="https://josh-a.dev/blog/making-my-issue-tracker.html" />
+    <meta
+      property="og:description"
+      content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo."
+    />
+    <meta
+      property="og:url"
+      content="https://josh-a.dev/blog/making-my-issue-tracker.html"
+    />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Making my Issue-Tracker" />
-    <meta name="twitter:description" content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo." />
+    <meta
+      name="twitter:description"
+      content="How the API issue tracker came together — modelling issues, routes, and the bits I'd redo."
+    />
 
     <link
       rel="icon"
@@ -117,9 +132,13 @@
           <nav class="toc-list" aria-label="On this page">
             <a href="#the-problem">The problem</a>
             <a href="#modelling-an-issue">Modelling an issue</a>
-            <a href="#fields-worth-keeping" class="lvl3">Fields worth keeping</a>
+            <a href="#fields-worth-keeping" class="lvl3"
+              >Fields worth keeping</a
+            >
             <a href="#the-api-surface">The API surface</a>
-            <a href="#validation-at-the-edge" class="lvl3">Validation at the edge</a>
+            <a href="#validation-at-the-edge" class="lvl3"
+              >Validation at the edge</a
+            >
             <a href="#who-is-writing" class="lvl3">Who is writing</a>
             <a href="#what-id-do-differently">What I'd do differently</a>
           </nav>
@@ -133,7 +152,10 @@
               <span>8 min read</span>
             </p>
             <h1>Making my Issue-Tracker</h1>
-            <p class="post-lede">How the API issue tracker came together — modelling issues, routes, and the bits I'd redo.</p>
+            <p class="post-lede">
+              How the API issue tracker came together — modelling issues,
+              routes, and the bits I'd redo.
+            </p>
           </header>
 
           <div class="post-body">
@@ -143,7 +165,7 @@
               codebase — the ones that go quiet in a chat thread and never come
               back. There is a
               <a
-                href="https://issue-tracker-410698782835.us-central1.run.app/"
+                href="issue-tracker.josh-a.dev"
                 target="_blank"
                 rel="noopener noreferrer"
                 >running copy</a
@@ -215,10 +237,11 @@
               <li>
                 <strong>Embedded sub-resources.</strong> Comments, test cases
                 and time entries live inside the issue document. The trade is
-                that sub-resource writes go through
-                <code>$push</code>/<code>$pull</code> and, for a single test
-                case, an <code>arrayFilters</code> update — but reads stay a
-                single lookup.
+                that sub-resource writes go through <code>$push</code>/<code
+                  >$pull</code
+                >
+                and, for a single test case, an <code>arrayFilters</code> update
+                — but reads stay a single lookup.
               </li>
               <li>
                 <strong><code>{ userId, fullName }</code> snapshots.</strong>
@@ -290,10 +313,11 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
             <h3 id="who-is-writing">Who is writing</h3>
             <p>
               The routes that create something — an issue, a comment, a test
-              case, a time entry — carry an <code>attachCurrentUser</code>
-              middleware. Author and commenter come from the request and never
-              from the body, so an <code>author</code> field in the JSON is
-              ignored, which is the only reason the embedded
+              case, a time entry — carry an
+              <code>attachCurrentUser</code> middleware. Author and commenter
+              come from the request and never from the body, so an
+              <code>author</code> field in the JSON is ignored, which is the
+              only reason the embedded
               <code>{ userId, fullName }</code> snapshots can be trusted at all.
               Today that middleware is a stub handing back one hardcoded user.
               It is the seam where real authentication goes.
@@ -304,8 +328,8 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
               The first version of this list was four complaints about code that
               has since changed. <code>insertIssue</code> is awaited now and
               returns the inserted document rather than the object
-              <code>createIssue</code> assembled; ids are hex strings, not a cast
-              that ended in <code>as unknown as number</code>; the
+              <code>createIssue</code> assembled; ids are hex strings, not a
+              cast that ended in <code>as unknown as number</code>; the
               <code>isValid</code> guard left the data layer for
               <code>parseId</code>, which rejects a malformed id at the edge
               before any controller runs; and <code>timeLog</code> has the two
@@ -315,8 +339,8 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
               <li>
                 <strong>Naming still drifts.</strong>
                 <code>stepsToReproduce</code>, <code>createdOn</code>,
-                <code>assignedTo</code>, <code>loggedOn</code> — I would pick one
-                convention and hold it across the schema.
+                <code>assignedTo</code>, <code>loggedOn</code> — I would pick
+                one convention and hold it across the schema.
               </li>
               <li>
                 <strong>One field is still a promise.</strong> The
@@ -330,14 +354,17 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
                 Extracting <code>parseId</code> and <code>parseCommentId</code>
                 removed the duplicated guard, but every handler that takes an id
                 still opens with the same preamble —
-                <code>const objectId = parseId(req, res); if (!objectId) return;</code>
+                <code
+                  >const objectId = parseId(req, res); if (!objectId)
+                  return;</code
+                >
                 — before it does anything else. A wrapper that parsed the id and
                 passed it down would delete those lines from all thirteen.
               </li>
               <li>
                 <strong
-                  >Splitting <code>app.ts</code> from
-                  <code>index.ts</code> was the best late call.</strong
+                  >Splitting <code>app.ts</code> from <code>index.ts</code> was
+                  the best late call.</strong
                 >
                 It let the tests run without a live Atlas cluster. I would do it
                 on day one next time.
@@ -346,8 +373,12 @@ GET    /issues/:id/time-log/summary        total hours for one issue</code></pre
           </div>
 
           <nav class="post-nav" aria-label="Post navigation">
-            <a href="../index.html#blog"><span class="dir">All posts</span>Blog index</a>
-            <a href="my-homelab-setup.html" class="next"><span class="dir">Next</span>My HomeLab Setup</a>
+            <a href="../index.html#blog"
+              ><span class="dir">All posts</span>Blog index</a
+            >
+            <a href="my-homelab-setup.html" class="next"
+              ><span class="dir">Next</span>My HomeLab Setup</a
+            >
           </nav>
         </article>
       </div>
